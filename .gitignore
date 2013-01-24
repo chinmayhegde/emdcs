@@ -1,3 +1,15 @@
 *.png
 *.eps
 *.m~
+*.swp
+*.swm
+*.swo
+*.swn
+*.o
+emd_flow/emd_flow
+*.mexa64
+*.mexmaci64
+emd_flow/lemon/lib
+emd_flow/lemon/bin
+emd_flow/lemon/include
+
