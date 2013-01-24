@@ -1,4 +1,4 @@
-In order to use the Matlab interface to the EMD flow algorith, do the
+In order to use the Matlab interface to the EMD flow algorithm, do the
 following:
 
 1) Build the lemon library (used for min-cost max flow)
