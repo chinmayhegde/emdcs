@@ -8,6 +8,7 @@ using namespace std;
 
 void output_function(const char* s) {
   mexPrintf(s);
+  mexEvalString("drawnow;");
 }
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {

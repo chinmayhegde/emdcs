@@ -1,14 +1,15 @@
 #include <vector>
 #include <cmath>
 #include <cstdio>
+#include <ctime>
 #include <lemon/list_graph.h>
 #include <lemon/maps.h>
-#include <lemon/capacity_scaling.h>
+#include <lemon/network_simplex.h>
 
 using namespace lemon;
 using namespace std;
 
-typedef CapacityScaling<ListDigraph, int, double> AlgType;
+typedef NetworkSimplex<ListDigraph, int, double> AlgType;
 
 void apply_lambda(double lambda, int r, int c,
     ListDigraph::ArcMap<double>* cost,
@@ -32,6 +33,8 @@ void emd_flow(
     void (*output_function)(const char*),
     bool verbose) {
 
+  clock_t total_time_begin = clock();
+
   const int kOutputBufferSize = 1000;
   char output_buffer[kOutputBufferSize];
 
@@ -46,6 +49,8 @@ void emd_flow(
     output_function(output_buffer);
   }
 
+  clock_t graph_construction_time_begin = clock();
+  
   // nodes corresponding to the matrix entries
   std::vector<std::vector<ListDigraph::Node> > innode;
   std::vector<std::vector<ListDigraph::Node> > outnode;
@@ -115,10 +120,16 @@ void emd_flow(
     }
   }
 
+  clock_t graph_construction_time = clock() - graph_construction_time_begin;
+
   if (verbose) {
     snprintf(output_buffer, kOutputBufferSize, "The graph has %d nodes and %d "
         "arcs.\n", countNodes(g), countArcs(g));
     output_function(output_buffer);
+    snprintf(output_buffer, kOutputBufferSize, "Total construction time: %lf "
+        "s\n ", static_cast<double>(graph_construction_time) / CLOCKS_PER_SEC);
+    output_function(output_buffer);
+
   }
 
   // cost scaling
@@ -206,6 +217,13 @@ void emd_flow(
     for (int jj = 0; jj < c; ++jj) {
       (*result)[ii][jj] = (alg.flow(nodearcs[ii][jj]) > 0);
     }
+  }
+
+  clock_t total_time = clock() - total_time_begin;
+  if (verbose) {
+    snprintf(output_buffer, kOutputBufferSize, "Total time %lf s\n",
+        static_cast<double>(total_time) / CLOCKS_PER_SEC);
+    output_function(output_buffer);
   }
 
   return;
