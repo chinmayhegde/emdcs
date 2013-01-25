@@ -8,7 +8,6 @@ clc
 
 addpath emd_flow/
 addpath Utils/
-addpath /Users/Chin/Documents/Chin/Acads/Utils/spgl1-1.7/
 
 %%%%% Construct synthetic signal
 
@@ -40,24 +39,45 @@ for ee=1:E
         Xhat_cosamp = reshape(Xhat_cosamp,n,w);
         err_cosamp(ee,mm) = norm(Xhat_cosamp - X, 'fro')/norm(X);
         
-        %%%%% reconstruct using EMDCS
+        %%%%% reconstruct using EMDCS-CoSaMP
         opt.tol = 1e-3; opt.K = K; opt.B = B;
         opt.w = w; opt.k = k;
         opt.verbose = 0; opt.pause = 0;
-        Xhat_emdcs = emdcs(y,Phi,opt);
-        Xhat_emdcs = reshape(Xhat_emdcs,n,w);
-        err_emdcs(ee,mm) = norm(Xhat_emdcs - X, 'fro')/norm(X);
+        Xhat_emdcs_cosamp = emdcs(y,Phi,opt);
+        Xhat_emdcs_cosamp = reshape(Xhat_emdcs_cosamp,n,w);
+        err_emdcs_cosamp(ee,mm) = norm(Xhat_emdcs_cosamp - X, 'fro')/norm(X);
         
+        %%%%% reconstruct using IHT
+        opt.iter = 50;
+        opt.stepsize = 0.5;
+        Xhat_iht = iht(y, Phi, K, opt.iter, opt.stepsize);
+        Xhat_iht = reshape(Xhat_iht, n, w);
+        err_iht(ee,mm) = norm(Xhat_iht - X, 'fro') / norm(X);
+        
+        %%%%% reconstruct using EMDCS-IHT
+        opt.B = B;
+        opt.w = w;
+        opt.k = k;
+        opt.verbose = false;
+        Xhat_emdcs_iht = emdcs(y, Phi, opt);
+        Xhat_emdcs_iht = reshape(Xhat_emdcs_iht, n, w);
+        err_emdcs_iht(ee,mm) = norm(Xhat_emdcs_iht - X, 'fro') / norm(X);
     end
 
 end
 
+% treshold error because we are interested in the probability of recovery
+err_threshold = 0.1;
+recovery_cosamp = error_to_recovery_indicator(err_cosamp, err_threshold);
+recovery_emdcs_cosamp = error_to_recovery_indicator(err_emdcs_cosamp, err_threshold);
+recovery_iht = error_to_recovery_indicator(err_iht, err_threshold);
+recovery_emdcs_iht = error_to_recovery_indicator(err_emdcs_iht, err_threshold);
+
 figure(1), clf
-%subplot(1,3,1), imagesc(X), axisfortex('','Original',''), rmaxis
-%subplot(1,3,2), imagesc(Xhat_cosamp), axisfortex('','CoSaMP',''), rmaxis
-%subplot(1,3,3), imagesc(Xhat_emdcs), axisfortex('','EMD-CS',''), rmaxis
 hold on
 box on
-plot(Mvec,mean(err_cosamp),'r-.*','LineWidth',2)
-plot(Mvec,mean(err_emdcs),'-d','LineWidth',2);
-axisfortex('','Number of measurements','Normalized recovery error')
+plot(Mvec,mean(recovery_cosamp),'-xr','LineWidth',2)
+plot(Mvec,mean(recovery_emdcs_cosamp),'-+g','LineWidth',2);
+plot(Mvec,mean(recovery_iht),'-+b','LineWidth',2);
+plot(Mvec,mean(recovery_emdcs_iht),'c-o','LineWidth',2);
+axisfortex('','Number of measurements','Probability of recovery')
