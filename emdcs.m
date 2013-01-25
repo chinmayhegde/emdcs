@@ -47,6 +47,9 @@ while le(kk,Its),
     if (norm(xprev(:,kk)-xprev(:,kk-1)) < 1e-3*norm(xprev(:,kk)))
        break;
     end
-    disp(kk)
+    
+    if opt.verbose
+        disp(kk)
+    end
 end
 xprev(:,kk+1:end)=[];

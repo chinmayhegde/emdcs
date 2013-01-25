@@ -4,12 +4,12 @@
 #include <ctime>
 #include <lemon/list_graph.h>
 #include <lemon/maps.h>
-#include <lemon/network_simplex.h>
+#include <lemon/capacity_scaling.h>
 
 using namespace lemon;
 using namespace std;
 
-typedef NetworkSimplex<ListDigraph, int, double> AlgType;
+typedef CapacityScaling<ListDigraph, int, double> AlgType;
 
 void apply_lambda(double lambda, int r, int c,
     ListDigraph::ArcMap<double>* cost,
