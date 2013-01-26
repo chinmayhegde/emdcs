@@ -59,7 +59,7 @@ for ee=1:E
         opt.w = w;
         opt.k = k;
         opt.verbose = false;
-        Xhat_emdcs_iht = emdcs(y, Phi, opt);
+        Xhat_emdcs_iht = emdcs_iht(y, Phi, opt);
         Xhat_emdcs_iht = reshape(Xhat_emdcs_iht, n, w);
         err_emdcs_iht(ee,mm) = norm(Xhat_emdcs_iht - X, 'fro') / norm(X);
     end
@@ -76,8 +76,8 @@ recovery_emdcs_iht = error_to_recovery_indicator(err_emdcs_iht, err_threshold);
 figure(1), clf
 hold on
 box on
-plot(Mvec,mean(recovery_cosamp),'-xr','LineWidth',2)
-plot(Mvec,mean(recovery_emdcs_cosamp),'-+g','LineWidth',2);
-plot(Mvec,mean(recovery_iht),'-+b','LineWidth',2);
-plot(Mvec,mean(recovery_emdcs_iht),'c-o','LineWidth',2);
+plot(Mvec,mean(recovery_cosamp),'-og','LineWidth',2)
+plot(Mvec,mean(recovery_emdcs_cosamp),'-+r','LineWidth',2);
+plot(Mvec,mean(recovery_iht),'-*c','LineWidth',2);
+plot(Mvec,mean(recovery_emdcs_iht),'-xb','LineWidth',2);
 axisfortex('','Number of measurements','Probability of recovery')
