@@ -12,13 +12,13 @@ addpath Utils/
 %%%%% Construct random walk
 
 n = 100; w = 10;
-p_step = 0.8;
-k = 3; B = k * w * p_step;
+p_step = 1;
+k = 2; B = k * w * p_step;
 X = gen_random_walk(w, n, k, p_step, 0.5, 1);
 
 %%%%% acquire compressive measurements
 N = n*w; K = k*w;
-M = 100;
+M = 80;
 
 Phi = 1/sqrt(M)*randn(M,N); % can use random Fourier etc.
 y = Phi*X(:);
@@ -41,5 +41,5 @@ figure(1), clf
 colormap gray
 subplot(1,3,1), imagesc(X), caxis([-1 1]), axisfortex('','Original',''), rmaxis
 subplot(1,3,2), imagesc(Xhat_cosamp), caxis([-1 1]), axisfortex('','CoSaMP',''), rmaxis
-subplot(1,3,3), imagesc(Xhat_emdcs), caxis([-1 1]), axisfortex('','EMD-CS',''), rmaxis
+subplot(1,3,3), imagesc(Xhat_emdcs), caxis([-1 1]), axisfortex('','EMD-CoSaMP',''), rmaxis
 
