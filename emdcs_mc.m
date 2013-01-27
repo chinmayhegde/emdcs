@@ -27,6 +27,8 @@ for ee=1:E
         
         disp([ee,mm])
         
+        tic;
+        
         %%%%% acquire compressive measurements
         M = Mvec(mm);
         
@@ -62,6 +64,8 @@ for ee=1:E
         Xhat_emdcs_iht = emdcs_iht(y, Phi, opt);
         Xhat_emdcs_iht = reshape(Xhat_emdcs_iht, n, w);
         err_emdcs_iht(ee,mm) = norm(Xhat_emdcs_iht - X, 'fro') / norm(X);
+        
+        toc
     end
 
 end
