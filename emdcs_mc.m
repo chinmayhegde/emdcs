@@ -80,8 +80,11 @@ recovery_emdcs_iht = error_to_recovery_indicator(err_emdcs_iht, err_threshold);
 figure(1), clf
 hold on
 box on
-plot(Mvec,mean(recovery_cosamp),'-og','LineWidth',2)
 plot(Mvec,mean(recovery_emdcs_cosamp),'-+r','LineWidth',2);
-plot(Mvec,mean(recovery_iht),'-*c','LineWidth',2);
 plot(Mvec,mean(recovery_emdcs_iht),'-xb','LineWidth',2);
+plot(Mvec,mean(recovery_cosamp),'-og','LineWidth',2)
+plot(Mvec,mean(recovery_iht),'-*c','LineWidth',2);
 axisfortex('','Number of measurements','Probability of recovery')
+legend('EMD-CoSaMP', 'EMD-IHT', 'CoSaMP', 'IHT', 'Location','SouthEast')
+axis tight
+grid on
