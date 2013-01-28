@@ -17,7 +17,7 @@ tmp = load('emdcs_mc_paper_signal.mat');
 X = tmp.X;
 
 N = n*w; K = k*w;
-E = 10;
+E = 100;
 Mvec = 60:10:150;
 err_cosamp = zeros(E,length(Mvec));
 
@@ -71,7 +71,7 @@ for ee=1:E
 end
 
 % treshold error because we are interested in the probability of recovery
-err_threshold = 0.1;
+err_threshold = 0.05;
 recovery_cosamp = error_to_recovery_indicator(err_cosamp, err_threshold);
 recovery_emdcs_cosamp = error_to_recovery_indicator(err_emdcs_cosamp, err_threshold);
 recovery_iht = error_to_recovery_indicator(err_iht, err_threshold);
@@ -81,9 +81,9 @@ figure(1), clf
 hold on
 box on
 plot(Mvec,mean(recovery_emdcs_cosamp),'-+r','LineWidth',2);
-plot(Mvec,mean(recovery_emdcs_iht),'-xb','LineWidth',2);
+plot(Mvec,mean(recovery_emdcs_iht),'-db','LineWidth',2);
 plot(Mvec,mean(recovery_cosamp),'-og','LineWidth',2)
-plot(Mvec,mean(recovery_iht),'-*c','LineWidth',2);
+plot(Mvec,mean(recovery_iht),'-sc','LineWidth',2);
 axisfortex('','Number of measurements','Probability of recovery')
 legend('EMD-CoSaMP', 'EMD-IHT', 'CoSaMP', 'IHT', 'Location','SouthEast')
 axis tight
