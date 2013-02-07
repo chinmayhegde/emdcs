@@ -17,7 +17,12 @@ kk=1;
 maxiter= 1000;
 xhat = zeros(N,1);
 
+iter_times = zeros(0,0);
+
 while le(kk,Its),
+    if opt.verbose
+        tic;
+    end
     
     %----- EMD Model approximation---%
     r = yy - Phi*xhat;
@@ -49,7 +54,13 @@ while le(kk,Its),
     end
     
     if opt.verbose
+        iter_times(kk - 1) = toc;
         disp(kk)
     end
 end
 xprev(:,kk+1:end)=[];
+
+if opt.verbose
+    fprintf('Iteration times: ');
+    iter_times
+end
