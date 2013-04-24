@@ -15,11 +15,16 @@ n = 100; w = 10;
 k = 2; B = 20;
 tmp = load('emdcs_mc_paper_signal.mat');
 X = tmp.X;
+norm_X_fro = norm(X, 'fro');
 
 N = n*w; K = k*w;
 E = 100;
 Mvec = 60:10:150;
 err_cosamp = zeros(E,length(Mvec));
+err_emdcs_cosamp = zeros(E,length(Mvec));
+err_iht = zeros(E,length(Mvec));
+err_emdcs_iht = zeros(E,length(Mvec));
+
 
 for ee=1:E
     
@@ -39,7 +44,7 @@ for ee=1:E
         opt.iter = 20;
         Xhat_cosamp = cosamp(y,Phi,K,opt.iter);
         Xhat_cosamp = reshape(Xhat_cosamp,n,w);
-        err_cosamp(ee,mm) = norm(Xhat_cosamp - X, 'fro')/norm(X);
+        err_cosamp(ee,mm) = norm(Xhat_cosamp - X, 'fro') / norm_X_fro;
         
         %%%%% reconstruct using EMDCS-CoSaMP
         opt.tol = 1e-3; opt.K = K; opt.B = B;
@@ -47,14 +52,14 @@ for ee=1:E
         opt.verbose = 0; opt.pause = 0;
         Xhat_emdcs_cosamp = emdcs(y,Phi,opt);
         Xhat_emdcs_cosamp = reshape(Xhat_emdcs_cosamp,n,w);
-        err_emdcs_cosamp(ee,mm) = norm(Xhat_emdcs_cosamp - X, 'fro')/norm(X);
+        err_emdcs_cosamp(ee,mm) = norm(Xhat_emdcs_cosamp - X, 'fro') / norm_X_fro;
         
         %%%%% reconstruct using IHT
         opt.iter = 50;
         opt.stepsize = 0.5;
         Xhat_iht = iht(y, Phi, K, opt.iter, opt.stepsize);
         Xhat_iht = reshape(Xhat_iht, n, w);
-        err_iht(ee,mm) = norm(Xhat_iht - X, 'fro') / norm(X);
+        err_iht(ee,mm) = norm(Xhat_iht - X, 'fro') / norm_X_fro;
         
         %%%%% reconstruct using EMDCS-IHT
         opt.B = B;
@@ -63,7 +68,7 @@ for ee=1:E
         opt.verbose = false;
         Xhat_emdcs_iht = emdcs_iht(y, Phi, opt);
         Xhat_emdcs_iht = reshape(Xhat_emdcs_iht, n, w);
-        err_emdcs_iht(ee,mm) = norm(Xhat_emdcs_iht - X, 'fro') / norm(X);
+        err_emdcs_iht(ee,mm) = norm(Xhat_emdcs_iht - X, 'fro') / norm_X_fro;
         
         toc
     end
